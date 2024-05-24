@@ -1,0 +1,23 @@
+Query:
+SELECT 
+    d.department_name,
+    AVG(s.salary) AS average_salary
+FROM 
+    employees e
+JOIN 
+    departments d ON e.department_id = d.department_id
+JOIN 
+    (SELECT 
+         employee_id, 
+         salary 
+     FROM 
+         salaries 
+     WHERE 
+         salary_date = (SELECT MAX(salary_date) FROM salaries WHERE employee_id = salaries.employee_id)
+    ) s ON e.employee_id = s.employee_id
+GROUP BY 
+    d.department_name
+HAVING 
+    AVG(s.salary) > 70000
+ORDER BY 
+    average_salary DESC;
